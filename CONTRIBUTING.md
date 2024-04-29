@@ -89,3 +89,16 @@ If necessary, specific code shared between extension and webviews should be extr
 ### Getting user input
 
 Use custom wrapper `askUser()` instead of the native [InputBox API](https://code.visualstudio.com/api/references/vscode-api#InputBox) which would result in procedural, verbose and brittle client code.
+
+## Vendored Dependencies
+
+Types for the [Git integration for VSCode](https://github.com/microsoft/vscode/tree/main/extensions/git) are vendored at [`src/types/git.ts`](src/types/git.ts).
+
+To update those, proceed as follows:
+
+```sh
+$ export VSCODE_TAG="1.88.1" # Adjust this to match desired version of VSCode.
+$ git remote add vscode "https://github.com/microsoft/vscode.git"
+$ git fetch --depth 1 vscode "$VSCODE_TAG"
+$ git show $(git ls-remote --refs --tags vscode "$VSCODE_TAG" | cut -d$'\t' -f1):extensions/git/src/api/git.ts > src/types/git.ts
+```
