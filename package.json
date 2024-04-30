@@ -33,12 +33,15 @@
     "vscode:prepublish": "npm run verify-deps && npm run lint && npm run test && npm run build",
     "verify-deps": "npx npm-run-all -pl verify-deps:*",
     "verify-deps:extension": "npx pnpm i --frozen-lockfile --prefer-offline",
+    "verify-deps:napi": "cd ./napi && pnpm run verify-deps",
     "verify-deps:webviews": "cd ./src/webviews && npm run verify-deps",
-    "compile:extension": "esbuild ./src/extension.ts --bundle --outfile=./dist/extension.js --external:vscode --format=cjs --platform=node --target=es2020",
+    "compile:extension": "esbuild ./src/extension.ts --bundle --outfile=./dist/extension.js --external:vscode --format=cjs --platform=node --target=es2020 --loader:.node=copy",
     "build": "run-p -l build:*",
+    "build:napi": "cd napi && pnpm run build",
     "build:extension": "npm run compile:extension -- --minify",
     "build:webviews": "cd ./src/webviews && npm run build",
     "dev": "npm run verify-deps && run-s dev:*",
+    "dev:napi": "cd napi && pnpm run dev",
     "dev:webviews": "cd ./src/webviews && npm run dev",
     "dev:extension": "npm run compile:extension -- --sourcemap --watch",
     "lint": "run-p lint:*",
@@ -473,6 +476,12 @@
             "type": "string",
             "default": "http://127.0.0.1:8080",
             "markdownDescription": "Specifies the endpoint to the root of the Radicle HTTP API connected to a seed node. This is commonly served via `radicle-httpd` and can be any Fully-Qualified Domain Name (FQDN) i.e. $protocol://$host:$port/$path ."
+          },
+          "radicle.advanced.useNodeApi": {
+            "scope": "machine-overridable",
+            "type": "boolean",
+            "default": false,
+            "markdownDescription": "Specifies whether to attempt to load a Node-API library to connect to the Radicle Node directly via Unix Domain Socket instead of HTTP."
           }
         }
       }
@@ -486,7 +495,9 @@
     "javascript-time-ago": "^2.5.9",
     "lodash": "^4.17.21",
     "ofetch": "^1.3.3",
-    "pinia": "^2.1.7"
+    "pinia": "^2.1.7",
+    "radicle-napi": "file:./napi",
+    "radicle-napi-linux-x64-gnu": "file:./napi/npm/linux-x64-gnu"
   },
   "devDependencies": {
     "@antfu/eslint-config": "^0.39.8",

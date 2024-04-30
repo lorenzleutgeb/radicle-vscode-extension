@@ -10,11 +10,9 @@ import {
   TreeItemCollapsibleState,
   Uri,
 } from 'vscode'
+import { getNodeConnection } from 'src/utils/nodeConnection'
 import { usePatchStore } from '../stores'
-import {
-  debouncedClearMemoizedGetCurrentProjectIdCache,
-  memoizedGetCurrentProjectId,
-} from '../helpers'
+import { debouncedClearMemoizedGetCurrentProjectIdCache } from '../helpers'
 import {
   type AugmentedPatch,
   type Change,
@@ -100,7 +98,7 @@ export const patchesTreeDataProvider: TreeDataProvider<
   },
   getChildren: async (elem) => {
     debouncedClearMemoizedGetCurrentProjectIdCache()
-    const rid = memoizedGetCurrentProjectId()
+    const { data: rid } = await getNodeConnection().getCurrentProjectId()
     if (!rid) {
       // This trap should theoretically never be reached,
       // because `patches.view` has `"when": "radicle.isRadInitialized"`.

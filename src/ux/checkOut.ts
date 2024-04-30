@@ -1,7 +1,8 @@
 import { window } from 'vscode'
-import { fetchFromHttpd, getRadCliRef, memoizedGetCurrentProjectId } from '../helpers'
+import { getRadCliRef } from '../helpers'
 import type { Patch } from '../types'
 import { exec, log, shortenHash, showLog } from '../utils'
+import { getNodeConnection } from '../utils/nodeConnection'
 import { notifyUserAboutFetchError } from '.'
 
 /**
@@ -10,7 +11,7 @@ import { notifyUserAboutFetchError } from '.'
  * @returns A promise that resolves to `true` if successful, otherwise `false`
  */
 export async function checkOutDefaultBranch(): Promise<boolean> {
-  const rid = memoizedGetCurrentProjectId()
+  const { data: rid } = await getNodeConnection().getCurrentProjectId()
 
   if (!rid) {
     log('Failed resolving RID', 'error')
@@ -19,7 +20,7 @@ export async function checkOutDefaultBranch(): Promise<boolean> {
   }
 
   // TODO: maninak move into gitStore?
-  const { data: project, error } = await fetchFromHttpd(`/projects/${rid}`)
+  const { data: project, error } = await getNodeConnection().getProject(rid)
   if (error) {
     notifyUserAboutFetchError(error)
 

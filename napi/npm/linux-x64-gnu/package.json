@@ -1,0 +1,21 @@
+{
+  "name": "radicle-napi-linux-x64-gnu",
+  "version": "0.0.0",
+  "os": [
+    "linux"
+  ],
+  "cpu": [
+    "x64"
+  ],
+  "main": "radicle-napi.linux-x64-gnu.node",
+  "files": [
+    "radicle-napi.linux-x64-gnu.node"
+  ],
+  "license": "Apache-2.0",
+  "engines": {
+    "node": ">= 18.17.0"
+  },
+  "libc": [
+    "glibc"
+  ]
+}

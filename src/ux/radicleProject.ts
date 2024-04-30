@@ -1,13 +1,12 @@
 import { sep } from 'node:path'
 import { type QuickPickItem, Uri, commands, window } from 'vscode'
-import { fetchFromHttpd, getRadCliRef } from '../helpers'
+import { getRadCliRef } from '../helpers'
 import { exec, getRepoRoot, showLog } from '../utils'
+import { getNodeConnection } from '../utils/nodeConnection'
 import { notifyUserAboutFetchError } from './httpdConnection'
 
 export async function selectAndCloneRadicleProject(): Promise<void> {
-  const { data: projects, error } = await fetchFromHttpd('/projects', {
-    query: { show: 'all' },
-  })
+  const { data: projects, error } = await getNodeConnection().getAllProjects()
   if (!projects) {
     notifyUserAboutFetchError(error)
 

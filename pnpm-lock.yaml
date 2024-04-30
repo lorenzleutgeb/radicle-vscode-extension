@@ -20,6 +20,12 @@ dependencies:
   pinia:
     specifier: ^2.1.7
     version: 2.1.7(typescript@5.3.3)(vue@3.4.20)
+  radicle-napi:
+    specifier: file:./napi
+    version: file:napi
+  radicle-napi-linux-x64-gnu:
+    specifier: file:./napi/npm/linux-x64-gnu
+    version: file:napi/npm/linux-x64-gnu
 
 devDependencies:
   '@antfu/eslint-config':
@@ -3732,3 +3738,18 @@ packages:
     resolution: {integrity: sha512-rVksvsnNCdJ/ohGc6xgPwyN8eheCxsiLM8mxuE/t/mOVqJewPuO1miLpTHQiRgTKCLexL4MeAFVagts7HmNZ2Q==}
     engines: {node: '>=10'}
     dev: true
+
+  file:napi:
+    resolution: {directory: napi, type: directory}
+    name: radicle-napi
+    engines: {node: '>= 18.17.0'}
+    dev: false
+
+  file:napi/npm/linux-x64-gnu:
+    resolution: {directory: napi/npm/linux-x64-gnu, type: directory}
+    name: radicle-napi-linux-x64-gnu
+    engines: {node: '>= 18.17.0'}
+    cpu: [x64]
+    os: [linux]
+    libc: [glibc]
+    dev: false

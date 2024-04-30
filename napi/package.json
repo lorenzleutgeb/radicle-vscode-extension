@@ -1,0 +1,39 @@
+{
+  "name": "radicle-napi",
+  "version": "0.0.0",
+  "main": "dist/index.js",
+  "types": "dist/index.d.ts",
+  "files": [
+    "dist/index.js",
+    "dist/index.d.ts"
+  ],
+  "devDependencies": {
+    "@napi-rs/cli": "^2.18.2"
+  },
+  "engines": {
+    "node": ">= 18.17.0"
+  },
+  "scripts": {
+    "artifacts": "napi artifacts",
+    "dev": "mkdir -p dist tmp && TMPDIR=$PWD/tmp DEBUG='napi:*' napi build --platform --release --dts dist/index.d.ts --js dist/index.js && ./mv.sh",
+    "build": "mkdir -p dist tmp && TMPDIR=$PWD/tmp DEBUG='napi:*' napi build --release --dts dist/index.d.ts --js dist/index.js && ./mv.sh",
+    "prepublishOnly": "napi prepublish -t npm",
+    "universal": "napi universal",
+    "version": "napi version",
+    "verify-deps": "pnpm i --prefer-offline && rustup show"
+  },
+  "napi": {
+    "name": "radicle-napi",
+    "triples": {
+      "defaults": false,
+      "additional": [
+        "aarch64-apple-darwin",
+        "aarch64-unknown-linux-gnu",
+        "aarch64-unknown-linux-musl",
+        "x86_64-apple-darwin",
+        "x86_64-unknown-linux-gnu",
+        "x86_64-unknown-linux-musl"
+      ]
+    }
+  }
+}

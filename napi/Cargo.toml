@@ -1,0 +1,29 @@
+[package]
+edition = "2021"
+name = "radicle-napi"
+version = "0.0.0"
+rust-version = "1.77"
+
+[lib]
+crate-type = ["cdylib"]
+
+[dependencies]
+anyhow = { version = "1" }
+chrono = { version = "0.4.0" }
+napi = { version = "2", default-features = false, features = ["napi9", "serde-json-ordered", "async", "chrono_date", "deferred_trace", "error_anyhow"] }
+napi-derive = "2"
+radicle-surf = { version = "0.21.0", default-features = false, features = ["serde"] }
+serde = { version = "1", features = ["derive"] }
+serde_json = { version = "1", features = ["preserve_order"] }
+thiserror = "1.0"
+tokio = { version = "1.21", default-features = false, features = ["macros", "rt-multi-thread"] }
+
+# It seems that specifying multiple Git remotes is not possible. <https://users.rust-lang.org/t/55831>
+radicle = { git = "https://seed.radicle.at/z3gqcJUoA1n9HaHKufZs5FCSGazv5.git", rev = "7126d051" }
+
+[build-dependencies]
+napi-build = "2"
+
+[profile.release]
+lto = true
+strip = "symbols"

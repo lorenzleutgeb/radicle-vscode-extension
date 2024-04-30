@@ -8,6 +8,12 @@
     "Vue.volar",
     "Vue.vscode-typescript-vue-plugin",
     "antfu.iconify",
+
+    // For napi.
+    "rust-lang.rust-analyzer",
+    "serayuzgur.crates",
+    "tamasfe.even-better-toml",
+    "lorenzopirro.rust-flash-snippets"
   ],
   // Please make sure you disable the following extensions *for this workspace*
   "unwantedRecommendations": [

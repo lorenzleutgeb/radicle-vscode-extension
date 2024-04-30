@@ -1,7 +1,8 @@
 import { createPinia, defineStore, setActivePinia } from 'pinia'
 import { computed, effect, ref } from '@vue/reactivity'
+import { getNodeConnection } from 'src/utils/nodeConnection'
 import { rerenderAllItemsInPatchesView, rerenderSomeItemsInPatchesView } from '../ux'
-import { fetchFromHttpd, memoizedGetCurrentProjectId } from '../helpers'
+import { memoizedGetCurrentProjectId } from '../helpers'
 import type { AugmentedPatch, Patch } from '../types'
 import { useGitStore } from '.'
 
@@ -42,15 +43,13 @@ export const usePatchStore = defineStore('patch', () => {
   }
 
   async function refetchPatch(patchId: Patch['id']) {
-    const rid = memoizedGetCurrentProjectId() // TODO: maninak get from a store instead
+    const { data: rid } = await getNodeConnection().getCurrentProjectId() // TODO: maninak get from a store instead
     if (!rid) {
       return { error: new Error('Failed resolving RID') }
     }
 
     const nowTs = Date.now() / 1000 // we devide to align with the httpd's timestamp format
-    const { data: fetchedPatch, error } = await fetchFromHttpd(
-      `/projects/${rid}/patches/${patchId}`,
-    )
+    const { data: fetchedPatch, error } = await getNodeConnection().fetchPatch(rid, patchId)
     if (error) {
       return { error }
     }
@@ -91,15 +90,9 @@ export const usePatchStore = defineStore('patch', () => {
     }
     const nowTs = Date.now() / 1000 // we devide to align with the httpd's timestamp format
     lastFetchedTs.value = nowTs
-    // TODO: refactor to make only a single request when https://radicle.zulipchat.com/#narrow/stream/369873-support/topic/fetch.20all.20patches.20in.20one.20req is resolved
-    const promisedResponses = Promise.all([
-      fetchFromHttpd(`/projects/${rid}/patches`, { query: { state: 'draft', perPage: 500 } }),
-      fetchFromHttpd(`/projects/${rid}/patches`, { query: { state: 'open', perPage: 500 } }),
-      fetchFromHttpd(`/projects/${rid}/patches`, {
-        query: { state: 'archived', perPage: 500 },
-      }),
-      fetchFromHttpd(`/projects/${rid}/patches`, { query: { state: 'merged', perPage: 500 } }),
-    ]).finally(() => (inProgressRequest = undefined))
+    const promisedResponses = getNodeConnection()
+      .fetchAllPatches(rid)
+      .finally(() => (inProgressRequest = undefined))
     inProgressRequest = promisedResponses
 
     const responses = await promisedResponses

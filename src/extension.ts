@@ -8,12 +8,9 @@ import {
   registerAllViews,
   registerAllWebviewRestorators,
 } from './helpers'
-import {
-  validateHttpdConnection,
-  validateRadCliInstallation,
-  validateRadicleIdentityAuthentication,
-} from './ux'
+import { validateRadCliInstallation, validateRadicleIdentityAuthentication } from './ux'
 import { setWhenClauseContext } from './utils'
+import { getNodeConnection } from './utils/nodeConnection'
 
 export function activate(ctx: ExtensionContext) {
   initExtensionContext(ctx)
@@ -27,7 +24,7 @@ export function activate(ctx: ExtensionContext) {
   logExtensionActivated()
   validateRadCliInstallation({ minimizeUserNotifications: true })
   validateRadicleIdentityAuthentication({ minimizeUserNotifications: true })
-  validateHttpdConnection({ minimizeUserNotifications: true })
+  getNodeConnection().validate({ minimizeUserNotifications: true })
 
   setWhenClauseContext('radicle.isExtensionActivated', true)
 }

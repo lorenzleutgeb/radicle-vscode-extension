@@ -19,7 +19,7 @@ export function resetHttpdConnection(): void {
   doFetch = ofetch.create({ baseURL: getResolvedHttpdRootUrl(), query: { perPage: 200 } })
 }
 
-type FetchFromHttpdReturn<Data extends object> = Promise<
+export type FetchFromHttpdReturn<Data extends object> = Promise<
   XOR<{ data: Data; response: FetchResponse<Data> }, { error: FetchError<Data> }>
 >
 
