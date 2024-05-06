@@ -116,9 +116,11 @@ export async function launchAuthenticationFlow(
   /* Notify user that authentication is required */
 
   const button = 'Authenticate'
-  const authStatusMsg = 'You need to be authenticated before performing this action'
-  const userSelection = await window.showErrorMessage(authStatusMsg, button)
+  const authStatusMsg = 'You must be authenticated before performing this action.'
+  const userSelection = await window.showWarningMessage(authStatusMsg, button)
   if (userSelection !== button) {
+    log(`Authentication request was dismissed by the user.`, 'warn')
+
     return false
   }
 
@@ -284,10 +286,10 @@ export function deAuthCurrentRadicleIdentity(): boolean {
     const button = 'Show output'
 
     const msg = `Failed de-authenticating Radicle identity ${radicleId}${composeNodeHomePathMsg()}.`
+    log(msg, 'error')
     window.showErrorMessage(msg, button).then((userSelection) => {
       userSelection === button && showLog()
     })
-    log(msg, 'error')
 
     return false
   }
